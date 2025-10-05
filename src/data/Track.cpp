@@ -195,7 +195,7 @@ std::string Track::to_json(uint64_t timestamp)
         document.GetAllocator());
       object1.AddMember("acceleration", 
         acceleration.at(i), document.GetAllocator());
-      object1.AddMember("n", associated.at(i).size(), 
+      object1.AddMember("n", static_cast<uint64_t>(associated.at(i).size()), 
         document.GetAllocator());
       rapidjson::Value associatedDelay(rapidjson::kArrayType);
       rapidjson::Value associatedDoppler(rapidjson::kArrayType);

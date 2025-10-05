@@ -84,6 +84,9 @@ public:
   /// @return Void.
   void kill();
 
+  /// @brief Virtual destructor.
+  virtual ~Source() = default;
+
 };
 
 #endif

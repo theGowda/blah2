@@ -7,7 +7,10 @@ project(blah2)
 include(CMakePrintHelpers)
 include(CTest)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+# code uses c++17 features 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
 
 find_package(Threads REQUIRED)
 find_package(asio  REQUIRED)
@@ -16,8 +19,7 @@ find_package(ryml CONFIG REQUIRED)
 find_package(httplib CONFIG REQUIRED)
 find_package(Armadillo CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
-
-set(CMAKE_PREFIX_PATH "/opt/uhd" ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH "/usr/local/uhd-4.8.0" ${CMAKE_PREFIX_PATH})
 find_package(UHD "4.8.0.0" CONFIG REQUIRED)
 
 set(PROJECT_ROOT "${PROJECT_SOURCE_DIR}")
@@ -31,22 +33,23 @@ message("Binary path: ${PROJECT_BINARY_DIR}")
 message("Binary test path: ${PROJECT_BINARY_TEST_DIR}")
 
 # include from top-level src dir
-include_directories(src ${UHD_INCLUDE_DIRS})
+include_directories(src /opt/homebrew/include ${UHD_INCLUDE_DIRS})
+link_directories(/opt/homebrew/lib)
 
 # TODO: create FindSdrplay.cmake for this
-add_library(sdrplay /usr/local/include/sdrplay_api.h)
-set_target_properties(sdrplay PROPERTIES LINKER_LANGUAGE C)
-target_link_libraries(sdrplay PUBLIC /usr/local/lib/libsdrplay_api.so.3.15)
+#add_library(sdrplay /usr/local/include/sdrplay_api.h)
+#set_target_properties(sdrplay PROPERTIES LINKER_LANGUAGE C)
+#target_link_libraries(sdrplay PUBLIC /usr/local/lib/libsdrplay_api.so.3.15)
 
 # TODO: Move to separate src/CMakeLists.txt
 add_executable(blah2
   src/blah2.cpp
   src/capture/Capture.cpp
   src/capture/Source.cpp
-  src/capture/rspduo/RspDuo.cpp
+  #src/capture/rspduo/RspDuo.cpp
   src/capture/usrp/Usrp.cpp
-  src/capture/hackrf/HackRf.cpp
-  src/capture/kraken/Kraken.cpp
+  #src/capture/hackrf/HackRf.cpp
+  #src/capture/kraken/Kraken.cpp
   src/process/ambiguity/Ambiguity.cpp
   src/process/clutter/WienerHopf.cpp
   src/process/detection/CfarDetector1D.cpp
@@ -63,7 +66,7 @@ add_executable(blah2
   src/data/meta/Timing.cpp
 )
 
-target_link_libraries(blah2 PRIVATE 
+target_link_libraries(blah2 PRIVATE
   Threads::Threads
   asio::asio
   ryml::ryml
@@ -72,9 +75,9 @@ target_link_libraries(blah2 PRIVATE
   ${UHD_LIBRARIES}
   fftw3
   fftw3_threads
-  sdrplay
-  hackrf
-  rtlsdr
+  #sdrplay
+  #hackrf
+  #rtlsdr
 )
 target_include_directories(blah2 PRIVATE RAPIDJSON_INCLUDE_DIRS "rapidjson/allocators.h")
 

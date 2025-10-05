@@ -1,8 +1,8 @@
 #include "Capture.h"
-#include "rspduo/RspDuo.h"
+//#include "rspduo/RspDuo.h"
 #include "usrp/Usrp.h"
-#include "hackrf/HackRf.h"
-#include "kraken/Kraken.h"
+//#include "hackrf/HackRf.h"
+//#include "kraken/Kraken.h"
 #include <iostream>
 #include <thread>
 #include <httplib.h>
@@ -32,12 +32,12 @@ void Capture::process(IqData *buffer1, IqData *buffer2, c4::yml::NodeRef config,
   std::thread t1([&]{
     while (true)
     {
-      httplib::Client cli("http://" + ip_capture + ":" 
+      httplib::Client cli("http://" + ip_capture + ":"
         + std::to_string(port_capture));
       httplib::Result res = cli.Get("/capture");
 
       // if capture status changed
-      if ((res->body == "true") != saveIq)
+      if (res && (res->body == "true") != saveIq)
       {
         saveIq = res->body == "true";
         if (saveIq)
@@ -68,6 +68,7 @@ void Capture::process(IqData *buffer1, IqData *buffer2, c4::yml::NodeRef config,
 std::unique_ptr<Source> Capture::factory_source(const std::string& type, c4::yml::NodeRef config)
 {
     // SDRplay RSPduo
+    /*
     if (type == VALID_TYPE[0])
     {
         int agcSetPoint, bandwidthNumber, gainReduction, lnaState;
@@ -82,8 +83,9 @@ std::unique_ptr<Source> Capture::factory_source(const std::string& type, c4::yml
           agcSetPoint, bandwidthNumber, gainReduction, lnaState,
           dabNotch, rfNotch);
     }
+    */
     // Usrp
-    else if (type == VALID_TYPE[1])
+    if (type == VALID_TYPE[1])
     {
         std::string address, subdev;
         std::vector<std::string> antenna;
@@ -104,6 +106,7 @@ std::unique_ptr<Source> Capture::factory_source(const std::string& type, c4::yml
           address, subdev, antenna, gain);
     }
     // HackRF
+    /*
     else if (type == VALID_TYPE[2])
     {
       std::vector<std::string> serial;
@@ -136,7 +139,10 @@ std::unique_ptr<Source> Capture::factory_source(const std::string& type, c4::yml
       return std::make_unique<HackRf>(type, fc, fs, path, &saveIq,
         serial, gainLna, gainVga, ampEnable);
     }
+    */
+
     // Kraken
+    /*
     else if (type == VALID_TYPE[3])
     {
       std::vector<double> gain;
@@ -148,6 +154,7 @@ std::unique_ptr<Source> Capture::factory_source(const std::string& type, c4::yml
       }
       return std::make_unique<Kraken>(type, fc, fs, path, &saveIq, gain);
     }
+    */
     // handle unknown type
     std::cerr << "Error: Source type does not exist." << std::endl;
     return nullptr;

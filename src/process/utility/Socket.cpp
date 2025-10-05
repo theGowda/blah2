@@ -5,12 +5,13 @@ asio::io_context Socket::io_context;
 const uint32_t Socket::MTU = 1024;
 
 Socket::Socket(const std::string& ip, uint16_t port)
-    : endpoint(asio::ip::address::from_string(ip), port), socket(io_context) {
+    : endpoint(asio::ip::make_address(ip), port), socket(io_context) {
     try {
         socket.connect(endpoint);
     } catch (const std::exception& e) {
-        std::cerr << "Error connecting to endpoint: " << e.what() << std::endl;
-        throw;
+        std::cerr << "Warning: Could not connect to " << ip << ":" << port
+                  << " - " << e.what() << std::endl;
+        std::cerr << "Socket will attempt to reconnect on each send." << std::endl;
     }
 }
 
