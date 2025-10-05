@@ -30,8 +30,9 @@ services:
       - 49152:80
     volumes:
       - ./html:/usr/local/apache2/htdocs
-    networks:
-      - blah2
+    network_mode: "host"
+    # networks:
+    #   - blah2
     container_name: blah2-web
 
   blah2_api:

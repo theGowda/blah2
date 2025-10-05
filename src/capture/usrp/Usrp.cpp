@@ -53,6 +53,9 @@ void Usrp::process(IqData *buffer1, IqData *buffer2)
     // create a receive streamer
     uhd::stream_args_t streamArgs("fc32", "sc16");
     streamArgs.channels = {0, 1};
+    // USB buffer optimization
+    //streamArgs.args["num_recv_frames"] = "512";
+    //streamArgs.args["recv_frame_size"] = "8192";
     uhd::rx_streamer::sptr rxStreamer = usrp->get_rx_stream(streamArgs);
 
     // allocate buffers to receive with samples (one buffer per channel)

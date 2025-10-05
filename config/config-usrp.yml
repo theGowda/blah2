@@ -1,6 +1,6 @@
 capture:
-  fs: 2000000
-  fc: 204640000
+  fs: 500000
+  fc: 915000000
   device:
     type: "Usrp"
     address: "localhost"
